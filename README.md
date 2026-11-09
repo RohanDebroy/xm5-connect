@@ -1,3 +1,5 @@
+> It's a vibe coded slop meant for personal uses however can be extended
+
 # Earbar for macOS
 
 A native menu bar app for Sony audio devices using the Tandem v2 protocol over Classic Bluetooth RFCOMM. It displays headphone battery and charging status, connected audio sources, buttons to request source switching, and a checked Listening Mode section for Noise Cancellation, Ambient and Normal (Off). The original target is WH-1000XM5; feature selection uses advertised protocol functions, never device names.
