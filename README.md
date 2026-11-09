@@ -1,13 +1,13 @@
 # Earbar for macOS
 
-A native menu bar app for Sony audio devices using the Tandem v2 protocol over Classic Bluetooth RFCOMM. It displays headphone battery and charging status, connected audio sources, buttons to request source switching, and a checked Listening Mode section for Noise Cancellation, Transparency and Normal (Off). The original target is WH-1000XM5; feature selection uses advertised protocol functions, never device names.
+A native menu bar app for Sony audio devices using the Tandem v2 protocol over Classic Bluetooth RFCOMM. It displays headphone battery and charging status, connected audio sources, buttons to request source switching, and a checked Listening Mode section for Noise Cancellation, Ambient and Normal (Off). The original target is WH-1000XM5; feature selection uses advertised protocol functions, never device names.
 
 ## Features
 
 - Menu bar battery percentage and charging status.
 - Automatic connection to connected headphones, with a manual device picker.
 - List of audio sources currently connected to the headphones and controls to request the active source.
-- Noise Cancellation, Transparency and Normal (Off), where supported.
+- Noise Cancellation, Ambient and Normal (Off), where supported.
 - Ambient Sound slider from 1–20 for the supported seven-byte NC/ASM profile.
 - Capability-based protocol abstractions: features are selected from device advertisements rather than model names.
 - Local Bluetooth control with no account, cloud service or runtime third-party dependencies.
@@ -98,14 +98,14 @@ Implemented table-1 function/type pairs:
 
 | Advertised function | NCASM type | Available controls |
 | --- | --- | --- |
-| `0x6B` | `0x17` | ANC, Transparency, Normal; ambient level 1–20 |
-| `0x6D` | `0x19` | ANC, Transparency, Normal; preserve adaptation settings |
-| `0x67` | `0x22` | Transparency, Normal |
-| `0x66` | `0x21` | Transparency, Normal |
+| `0x6B` | `0x17` | ANC, Ambient, Normal; ambient level 1–20 |
+| `0x6D` | `0x19` | ANC, Ambient, Normal; preserve adaptation settings |
+| `0x67` | `0x22` | Ambient, Normal |
+| `0x66` | `0x21` | Ambient, Normal |
 
 Mode state uses `66 <type>` (GET), `67` (reply), `68` (SET), and `69` (notification). These v2 bytes are confirmed by the supplied raw enum tables and [reference NCASM structures](https://github.com/mos9527/SonyHeadphonesClient/blob/master/src/ProtocolV2T1.h); the high-level overview has conflicting older values. The app never substitutes a different schema for an unknown advertised variant.
 
-Before a mode write, the app re-reads the current state and preserves the newest observed ambient level, voice-focus and adaptation fields. For the seven-byte 6B/17 profile, Transparency includes an ambient-level slider (1–20). A drag sends one settled command on release; Voice Focus is preserved. The level is confirmed by the headphones. Other profiles keep mode controls without an unverified slider range; when enabling ambient with a reported zero level, it uses the reference setter's minimum of 1. Mode switches wait for a settled notification rather than treating a Bluetooth ACK as confirmation. Listening state is applied in receive order so a newer hardware notification cannot be overwritten by an older request reply. Malformed reports clear the checkmark and disable changes until valid state is read again. Battery and connected-source data remain independent of mode parsing errors.
+Before a mode write, the app re-reads the current state and preserves the newest observed ambient level, voice-focus and adaptation fields. For the seven-byte 6B/17 profile, Ambient includes an ambient-level slider (1–20). A drag sends one settled command on release; Voice Focus is preserved. The level is confirmed by the headphones. Other profiles keep mode controls without an unverified slider range; when enabling ambient with a reported zero level, it uses the reference setter's minimum of 1. Mode switches wait for a settled notification rather than treating a Bluetooth ACK as confirmation. Listening state is applied in receive order so a newer hardware notification cannot be overwritten by an older request reply. Malformed reports clear the checkmark and disable changes until valid state is read again. Battery and connected-source data remain independent of mode parsing errors.
 
 ## Audio-device list requests
 
@@ -153,6 +153,11 @@ These projects were consulted as protocol references; their implementation code 
 
 ## Stable operation feedback (0.5.0)
 
-The menu uses a fixed-size panel with scrollable controls and a persistent status area. Background device discovery does not insert a loading row. Mode changes keep the last confirmed selection visible while the device transitions; commands still use live state. The ambient slider stays in place and is disabled outside Transparency. A released level remains labelled Applying until the operation finishes, then follows confirmed device state.
+The menu uses a fixed-size panel with scrollable controls and a persistent header status line. Background device discovery does not insert a loading row. Mode changes keep the last confirmed selection visible while the device transitions; commands still use live state. The ambient slider stays in place and is disabled outside Ambient. A released level remains labelled Applying until the operation finishes, then follows confirmed device state.
 
 The product, executable and bundle are named Earbar. The bundle identifier is `local.earbar.desktop`. Earbar is a working product name; name availability has not been checked.
+
+
+### 0.5.1 layout refinements
+
+The ambient slider sits immediately below the Ambient mode row, before Normal. Scroll indicators are hidden; overflow remains scrollable on smaller screens. The footer contains only its buttons with8-point vertical padding. Operation messages use the existing header status line, with full text in its tooltip, without reserving a blank footer block.

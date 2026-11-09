@@ -49,3 +49,8 @@ Renamed visible app, bundle, executable and Swift target to Earbar0.5.0/build6; 
 
 
 Opened the0.5.0 bundle through Finder after quitting the previous process; Activity Monitor confirms Earbar running as PID93530. This verifies the renamed build starts, not visual interaction quality. The obsolete generated bundle was removed from dist so only Earbar.app remains.
+
+
+## 0.5.1 requested layout refinements
+
+Hidden scroll indicators while retaining overflow scrolling, moved the slider directly under Ambient before Normal, changed the mode title from Transparency to Ambient, and replaced the footer's reserved message block with the existing single-line header status/tooltip. Footer vertical padding is8points; content/header padding is16points.77tests pass; release build, plist lint and strict signature verification pass for0.5.1/build7. No new tests were added for these presentation-only changes. Visual layout still needs user confirmation.

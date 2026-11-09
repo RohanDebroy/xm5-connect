@@ -6,7 +6,7 @@ public enum ListeningMode: String, CaseIterable, Hashable, Sendable {
     public var title: String {
         switch self {
         case .noiseCancelling: return "Noise Cancellation"
-        case .ambient: return "Transparency"
+        case .ambient: return "Ambient"
         case .normal: return "Normal (Off)"
         }
     }
@@ -59,7 +59,7 @@ public struct ListeningStatus: Equatable, Sendable {
             throw TandemError.unsupported("Ambient level is unavailable or outside the supported range.")
         }
         guard mode == .ambient else {
-            throw TandemError.unsupported("Select Transparency before changing its level.")
+            throw TandemError.unsupported("Select Ambient before changing its level.")
         }
         var command = try command(for: .ambient)
         command[6] = UInt8(ambientLevel)

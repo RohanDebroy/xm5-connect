@@ -33,10 +33,10 @@ struct HeadphonePanel: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            header.padding(20)
+            header.padding(16)
             Divider()
-            ScrollView {
-                VStack(alignment: .leading, spacing: 16) {
+            ScrollView(showsIndicators: false) {
+                VStack(alignment: .leading, spacing: 12) {
                     deviceSelection
                     if model.phase == .connected {
                         battery
@@ -51,20 +51,12 @@ struct HeadphonePanel: View {
                     }
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(20)
+                .padding(16)
             }
             Divider()
-            VStack(alignment: .leading, spacing: 10) {
-                Text(model.message ?? " ")
-                    .font(.caption).foregroundStyle(.secondary)
-                    .lineLimit(2).textSelection(.enabled)
-                    .frame(maxWidth: .infinity, minHeight: 32, maxHeight: 32, alignment: .topLeading)
-                    .help(model.message ?? "")
-                    .accessibilityHidden(model.message == nil)
-                footer
-            }
-            .padding(.horizontal, 20)
-            .padding(.vertical, 12)
+            footer
+                .padding(.horizontal, 16)
+                .padding(.vertical, 8)
         }
         .frame(width: 370, height: 640)
         .transaction { $0.animation = nil }
@@ -79,7 +71,10 @@ struct HeadphonePanel: View {
                 HStack(spacing: 5) {
                     Circle().fill(model.phase == .connected ? Color.green : Color.secondary.opacity(0.5))
                         .frame(width: 6, height: 6).accessibilityHidden(true)
-                    Text(model.phase.label).font(.caption).foregroundStyle(.secondary)
+                    Text(model.message ?? model.phase.label)
+                        .font(.caption).foregroundStyle(.secondary)
+                        .lineLimit(1)
+                        .help(model.message ?? model.phase.label)
                 }
             }
             Spacer()

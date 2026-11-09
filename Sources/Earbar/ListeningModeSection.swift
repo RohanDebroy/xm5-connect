@@ -12,12 +12,13 @@ struct ListeningModeSection: View {
                 .padding(.bottom, 3)
             ForEach(ListeningMode.allCases, id: \.self) { mode in
                 modeRow(mode)
-            }
-            if let status = model.listeningPresentation.confirmed,
-               let range = status.ambientLevelRange, let level = status.ambientLevel, range.contains(level) {
-                AmbientLevelControl(model: model, reportedLevel: level, range: range)
-                    .padding(.leading, 27)
-                    .padding(.vertical, 5)
+                if mode == .ambient,
+                   let status = model.listeningPresentation.confirmed,
+                   let range = status.ambientLevelRange, let level = status.ambientLevel, range.contains(level) {
+                    AmbientLevelControl(model: model, reportedLevel: level, range: range)
+                        .padding(.leading, 27)
+                        .padding(.bottom, 5)
+                }
             }
             Text(model.state.listeningIssue ?? (model.state.listening?.isChanging == true ? "Headphones are changing modes…" : " "))
                 .font(.caption).foregroundStyle(.secondary)
