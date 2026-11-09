@@ -32,31 +32,42 @@ struct HeadphonePanel: View {
     @ObservedObject var catalog: DeviceCatalog
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 16) {
-            header
+        VStack(spacing: 0) {
+            header.padding(20)
             Divider()
-            deviceSelection
-            if model.phase == .connected {
-                battery
-                Divider()
-                ListeningModeSection(model: model)
-                Divider()
-                sources
-            } else {
-                Text(model.phase.isConnecting ? "Opening the headphone control connection…" : (model.autoConnectEnabled ? "Waiting for connected Sony headphones. Battery and audio devices load automatically." : "Automatic connection paused. Click Connect to resume."))
-                    .font(.callout).foregroundStyle(.secondary)
-                    .fixedSize(horizontal: false, vertical: true)
-            }
-            if let message = model.message {
-                Text(message).font(.callout).foregroundStyle(.secondary)
-                    .textSelection(.enabled).fixedSize(horizontal: false, vertical: true)
+            ScrollView {
+                VStack(alignment: .leading, spacing: 16) {
+                    deviceSelection
+                    if model.phase == .connected {
+                        battery
+                        Divider()
+                        ListeningModeSection(model: model)
+                        Divider()
+                        sources
+                    } else {
+                        Text(model.phase.isConnecting ? "Opening the headphone control connection…" : (model.autoConnectEnabled ? "Waiting for connected Sony headphones. Battery and audio devices load automatically." : "Automatic connection paused. Click Connect to resume."))
+                            .font(.callout).foregroundStyle(.secondary)
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(20)
             }
             Divider()
-            footer
+            VStack(alignment: .leading, spacing: 10) {
+                Text(model.message ?? " ")
+                    .font(.caption).foregroundStyle(.secondary)
+                    .lineLimit(2).textSelection(.enabled)
+                    .frame(maxWidth: .infinity, minHeight: 32, maxHeight: 32, alignment: .topLeading)
+                    .help(model.message ?? "")
+                    .accessibilityHidden(model.message == nil)
+                footer
+            }
+            .padding(.horizontal, 20)
+            .padding(.vertical, 12)
         }
-        .padding(20)
-        .frame(width: 370)
-        .task { catalog.refresh() }
+        .frame(width: 370, height: 640)
+        .transaction { $0.animation = nil }
     }
 
     private var header: some View {
@@ -72,9 +83,11 @@ struct HeadphonePanel: View {
                 }
             }
             Spacer()
-            if model.busy || model.phase.isConnecting {
-                ProgressView().controlSize(.small).accessibilityLabel("Device operation in progress")
-            }
+            ProgressView().controlSize(.small)
+                .frame(width: 16, height: 16)
+                .opacity(model.busy || model.phase.isConnecting ? 1 : 0)
+                .accessibilityLabel("Device operation in progress")
+                .accessibilityHidden(!model.busy && !model.phase.isConnecting)
         }
     }
 
@@ -99,7 +112,6 @@ struct HeadphonePanel: View {
                 }
             }
             .labelsHidden().pickerStyle(.menu).frame(maxWidth: .infinity, alignment: .leading)
-            if catalog.isRefreshing { Text("Checking paired devices…").font(.caption).foregroundStyle(.secondary) }
             if let message = catalog.message, catalog.devices.isEmpty {
                 Text(message).font(.caption).foregroundStyle(.secondary).fixedSize(horizontal: false, vertical: true)
                 Button("Open Bluetooth Settings", action: openBluetoothSettings).buttonStyle(.link)
@@ -147,7 +159,13 @@ struct HeadphonePanel: View {
                                 .font(.caption).foregroundStyle(.secondary)
                         }
                         Spacer(minLength: 8)
-                        Button(model.switchingAddress == source.address ? "Switching…" : "Use for audio") { model.switchSource(source) }
+                        Button { model.switchSource(source) } label: {
+                            Text("Use for audio")
+                                .opacity(model.switchingAddress == source.address ? 0 : 1)
+                                .overlay {
+                                    if model.switchingAddress == source.address { ProgressView().controlSize(.small) }
+                                }
+                        }
                             .controlSize(.small)
                             .disabled(model.busy || !model.state.canSwitch)
                             .accessibilityLabel("Switch audio source to \(source.name)")

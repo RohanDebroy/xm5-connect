@@ -29,7 +29,7 @@ No live auto-connection, battery or source-list behavior is claimed verified. Th
 
 Final listening-mode suite: 68 XCTest tests, zero failures. Release build, Info.plist lint and strict signature verification passed for 0.3.0/build 4. Coverage includes capability/profile gating, exact mode commands, preservation of ambient/voice/adaptation state, settled-confirmation matching, unknown/malformed profiles, external mode notifications and batched reply/newer-notification ordering. A fresh reviewer reproduced the stale-continuation overwrite; the regression failed and then passed after receive-order application.
 
-On resume, rechecked version/signature and reran all 68 tests. Opened the packaged bundle through Finder and confirmed a new Earbar process in Activity Monitor (PID54323). This verifies startup, not the mode UI's rendering or audible hardware changes. Listening-mode hardware checklist remains outstanding.
+On resume, rechecked version/signature and reran all 68 tests. Opened the packaged bundle through Finder and confirmed a new app process in Activity Monitor (PID54323). This verifies startup, not the mode UI's rendering or audible hardware changes. Listening-mode hardware checklist remains outstanding.
 
 
 ## 0.4.0 ambient slider verification (2026-11-09)
@@ -39,3 +39,13 @@ Compared mode/level semantics with Gadgetbridge Sony v2 and ambient preference s
 Final suite:75 XCTest tests, zero failures. Release build, Info.plist lint and strict ad-hoc signature verification passed for0.4.0/build5. New coverage checks wire-level1/20 boundaries, invalid inputs/reports, Voice Focus preservation, fresh read before level write, delayed settled confirmation, mismatched confirmed levels, external-mode changes during a read, and unsent preflight rejection with sequence reuse. Independent review caught invalid report bounds and the queued-write race; both are addressed. A final review boundary case hides the slider for a raw0 level outside1...20. Keyboard binding edits have a deferred commit in addition to drag completion and explicit accessibility adjustment.
 
 Mouse/keyboard/VoiceOver slider behavior and audible ambient-level changes still require the native hardware checklist; automated tests verify protocol/state behavior, not acoustics.
+
+
+## 0.5.0 stable UI and Earbar rename
+
+Reproduced layout-changing conditions from the view/state paths: five-second discovery inserted a text row, mode transitions removed ambient controls, source action text changed button width, and operation messages changed panel height. Replaced content-driven panel height with370x640 scrollable content and pinned header/footer. Removed the periodic loading row and forced discovery on opening the popover. Reserved message/spinner space, retained the ambient control outside Transparency, kept last-confirmed mode during intermediate reports, and retained local Applying feedback for pending slider writes. Controls remain semantically disabled during conflicting operations for keyboard/VoiceOver users. Slider editing explicitly cancels on an external mode transition.
+
+Renamed visible app, bundle, executable and Swift target to Earbar0.5.0/build6; bundle identifier is local.earbar.desktop. Tests:77, zero failures. Release build, plist lint and strict signature verification pass. These checks establish state behavior and packaging; native menu movement, keyboard/VoiceOver and interrupted slider drag still need live UI verification.
+
+
+Opened the0.5.0 bundle through Finder after quitting the previous process; Activity Monitor confirms Earbar running as PID93530. This verifies the renamed build starts, not visual interaction quality. The obsolete generated bundle was removed from dist so only Earbar.app remains.

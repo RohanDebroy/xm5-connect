@@ -7,4 +7,4 @@ mkdir -p "$PROJECT_ROOT/.build/cache" "$PROJECT_ROOT/.build/config" "$PROJECT_RO
 SWIFT_OPTIONS=(--package-path "$PROJECT_ROOT" --cache-path "$PROJECT_ROOT/.build/cache" --config-path "$PROJECT_ROOT/.build/config" --security-path "$PROJECT_ROOT/.build/security" --manifest-cache local)
 # The outer Codex sandbox already isolates the compiler. A normal terminal does
 # not need this; opt in explicitly when the host denies nested sandbox setup.
-if [[ "${SONY_DISABLE_BUILD_SANDBOX:-0}" == 1 ]]; then SWIFT_OPTIONS+=(--disable-sandbox); fi
+if [[ "${EARBAR_DISABLE_BUILD_SANDBOX:-${SONY_DISABLE_BUILD_SANDBOX:-0}}" == 1 ]]; then SWIFT_OPTIONS+=(--disable-sandbox); fi

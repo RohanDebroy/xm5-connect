@@ -37,3 +37,11 @@ Do not claim support for another model/firmware until its capability report and 
 - [ ] Verify audible ambient difference, Voice Focus preservation, keyboard arrows and VoiceOver adjustment.
 - [ ] Change modes with the headphone button/phone while dragging; releasing must not reactivate Transparency.
 - [ ] Confirm external ambient-level notifications update the slider when idle, and ANC/Normal hide it.
+
+
+## Stable UI (0.5.0)
+
+- [ ] Open the panel and leave it open across multiple discovery/poll cycles; header/footer and panel bounds stay in place.
+- [ ] Switch modes, change ambient level and switch sources; no content-driven panel resize or button-width movement.
+- [ ] Drag ambient level, then change mode using hardware/phone; drag cancels and cannot reactivate Transparency.
+- [ ] Keyboard/VoiceOver controls report unavailable during operations and work again after confirmation/failure.

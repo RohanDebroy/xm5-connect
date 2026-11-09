@@ -57,3 +57,8 @@ Resume completed: verified 0.3.0 signature, reran 68 tests, launched bundle via 
 ### 2026-11-09:0.4.0 ambient slider
 
 User requested Gadgetbridge cross-check and ambient slider. Compared seven-byte v2 encoder and Android level preference offset against Gadgetbridge GitHub mirror; existing mode fields match. Added capability-based6B/17 ambient slider1–20, local drag draft, keyboard/accessibility paths, fresh reads, settled level confirmation, and pre-transmission validation against newly observed device state. Preserves Voice Focus. Other profile ranges remain unguessed.75tests and signed release pass. See verification and hardware checklist for remaining live UI/acoustic checks.
+
+
+### 2026-11-09:0.5.0 stable UI and rename
+
+User reported layout fluctuations on operations and requested a different product name. Addressed content-driven panel sizing, periodic discovery loading rows, conditional slider removal, source-button width changes and unreserved feedback space. Added last-confirmed listening presentation with two regression tests. Earbar is the assistant-selected working name pending any user preference; product/executable/target/bundle labels and README now agree. Bundle identifier: local.earbar.desktop.77tests and release/signature checks pass. Finder launch confirmed Earbar PID93530. Native operation layout/VoiceOver/drag interruption remain checklist items.

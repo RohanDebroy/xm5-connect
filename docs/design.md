@@ -77,3 +77,8 @@ Apply matched replies and notifications synchronously in receive order before re
 User requested an ambient slider alongside the mode controls. Show it below Transparency for capability-negotiated function 6B/type17. Use the independently confirmed range 1–20, preserving Voice Focus. Other NCASM profiles retain mode controls without a guessed adjustable range. Keep draft values local while dragging, send one settled SET on release, fresh-read first and reject if hardware/another app has left Transparency. Wait for matching settled notification and validate both mode and level. Keep confirmed state in receive order. Keyboard/accessibility increments use the same client command path. No separate audio volume control is introduced.
 
 The 2026-11-09 user capture confirms successful ANC/ambient/off reports, battery44 and two connected sources; it does not prove audible behavior. Gadgetbridge's GitHub mirror independently matches the seven-byte command and its ambient preference maps to wire levels1–20. See README reference links.
+
+
+## 0.5.0 stable operation layout
+
+Keep a fixed370x640 panel with scrolling central content and pinned header/footer. Reserve status and spinner space rather than inserting rows on routine operations. Discovery continues in the background without a loading row. Keep a capability-supported ambient slider visible but disabled outside Transparency. Retain last-confirmed mode only during same-profile intermediate reports, while command availability uses live state. Display pending slider draft as Applying until the operation ends. Rename the product to Earbar as an assistant-selected working name, retaining the Earbar bundle identifier.

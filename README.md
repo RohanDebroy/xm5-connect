@@ -38,7 +38,7 @@ open "dist/Earbar.app"
 
 The build script uses the current Mac's architecture and creates an `.app` with the required Bluetooth descriptions and menu bar-only setting. Open `Package.swift` in Xcode to inspect or debug the source. Launch the packaged app for normal use so Bluetooth permission belongs to its bundle.
 
-In a development environment that already sandboxes the compiler and prohibits SwiftPM's nested sandbox, set `SONY_DISABLE_BUILD_SANDBOX=1` when running the scripts. Build/cache files stay under `.build/`.
+In a development environment that already sandboxes the compiler and prohibits SwiftPM's nested sandbox, set `EARBAR_DISABLE_BUILD_SANDBOX=1` when running the scripts. Build/cache files stay under `.build/`.
 
 ## Abstractions
 
@@ -149,3 +149,10 @@ These projects were consulted as protocol references; their implementation code 
 - [Design and architecture decisions](docs/design.md)
 - [Verification results](docs/verification.md)
 - [Hardware verification checklist](docs/hardware-checklist.md)
+
+
+## Stable operation feedback (0.5.0)
+
+The menu uses a fixed-size panel with scrollable controls and a persistent status area. Background device discovery does not insert a loading row. Mode changes keep the last confirmed selection visible while the device transitions; commands still use live state. The ambient slider stays in place and is disabled outside Transparency. A released level remains labelled Applying until the operation finishes, then follows confirmed device state.
+
+The product, executable and bundle are named Earbar. The bundle identifier is `local.earbar.desktop`. Earbar is a working product name; name availability has not been checked.

@@ -37,6 +37,7 @@ final class HeadphoneModel: ObservableObject {
     @Published private(set) var autoConnectEnabled = true
     @Published private(set) var phase: Phase = .idle
     @Published private(set) var state = HeadphoneState()
+    @Published private(set) var listeningPresentation = ListeningPresentation()
     @Published private(set) var busy = false
     @Published private(set) var switchingAddress: String?
     @Published private(set) var changingListeningMode: ListeningMode?
@@ -104,6 +105,9 @@ final class HeadphoneModel: ObservableObject {
         newClient.onLog = { [weak self] line in self?.log(line) }
         newClient.onChange = { [weak self] state in
             guard let self, self.connectionToken == token else { return }
+            var presentation = self.listeningPresentation
+            presentation.update(state.listening)
+            if presentation != self.listeningPresentation { self.listeningPresentation = presentation }
             self.state = state
         }
         newClient.onClosed = { [weak self] error in
@@ -260,6 +264,7 @@ final class HeadphoneModel: ObservableObject {
         work?.cancel(); work = nil
         polling?.cancel(); polling = nil
         client?.stop(); client = nil
+        listeningPresentation = ListeningPresentation()
         state = HeadphoneState(); busy = false; switchingAddress = nil; changingListeningMode = nil; updatedAt = nil
     }
 
