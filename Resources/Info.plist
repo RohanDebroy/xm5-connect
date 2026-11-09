@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0"><dict>
+    <key>CFBundleExecutable</key><string>Earbar</string>
+    <key>CFBundleIdentifier</key><string>local.earbar.desktop</string>
+    <key>CFBundleName</key><string>Earbar</string>
+    <key>CFBundleDisplayName</key><string>Earbar</string>
+    <key>CFBundlePackageType</key><string>APPL</string>
+    <key>CFBundleShortVersionString</key><string>0.4.0</string>
+    <key>CFBundleVersion</key><string>5</string>
+    <key>LSMinimumSystemVersion</key><string>13.0</string>
+    <key>LSUIElement</key><true/>
+    <key>NSHighResolutionCapable</key><true/>
+    <key>NSBluetoothAlwaysUsageDescription</key><string>Earbar uses Bluetooth to read headphone battery and connected audio sources, and switch the selected source.</string>
+    <key>NSBluetoothPeripheralUsageDescription</key><string>Earbar controls your paired Sony headphones over Bluetooth.</string>
+</dict></plist>
