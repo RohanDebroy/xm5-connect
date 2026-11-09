@@ -54,3 +54,10 @@ Opened the0.5.0 bundle through Finder after quitting the previous process; Activ
 ## 0.5.1 requested layout refinements
 
 Hidden scroll indicators while retaining overflow scrolling, moved the slider directly under Ambient before Normal, changed the mode title from Transparency to Ambient, and replaced the footer's reserved message block with the existing single-line header status/tooltip. Footer vertical padding is8points; content/header padding is16points.77tests pass; release build, plist lint and strict signature verification pass for0.5.1/build7. No new tests were added for these presentation-only changes. Visual layout still needs user confirmation.
+
+
+## 0.6.0 macOS audio output routing
+
+Root cause: source switching only issued the headphone command; SystemAudioOutput had no write path. Added local-address-scoped coordination with post-acceptance CoreAudio selection and readback.83XCTest tests pass, including source-switch ordering, rejected/remote/unknown-source isolation, partial routing failure, cancellation before mutation and address/ambiguity matching. Independent review found no blocking defects. Release build, plist lint and strict signature verification pass for0.6.0/build8.
+
+A read-only CoreAudio probe inside the command sandbox could not read the default output or enumerate Bluetooth endpoints, so it establishes no live hardware result. The packaged app was reopened via Finder and verified running as PID94949 in Activity Monitor. Actual source-address matching, output selection and audible playback remain hardware checklist items. No live audio routing change was performed by the agent.

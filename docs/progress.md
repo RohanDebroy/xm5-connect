@@ -62,3 +62,8 @@ User requested Gadgetbridge cross-check and ambient slider. Compared seven-byte 
 ### 2026-11-09:0.5.0 stable UI and rename
 
 User reported layout fluctuations on operations and requested a different product name. Addressed content-driven panel sizing, periodic discovery loading rows, conditional slider removal, source-button width changes and unreserved feedback space. Added last-confirmed listening presentation with two regression tests. Earbar is the assistant-selected working name pending any user preference; product/executable/target/bundle labels and README now agree. Bundle identifier: local.earbar.desktop.77tests and release/signature checks pass. Finder launch confirmed Earbar PID93530. Native operation layout/VoiceOver/drag interruption remain checklist items.
+
+
+### 2026-11-09:0.6.0 local macOS output routing
+
+User reported Use for audio left macOS output on another device. Implemented the missing native output selection after successful headset switching to this Mac, matched by Bluetooth controller address. Added isolated output matching, bounded CoreAudio endpoint/readback checks and cancellation/token guards. Phone/other-source actions do not touch this Mac's output.83tests pass; signed0.6.0build8restarted as PID94949. Command sandbox lacks audio-device access, so live routing still requires the user's retry.

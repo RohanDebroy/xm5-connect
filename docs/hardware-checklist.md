@@ -45,3 +45,13 @@ Do not claim support for another model/firmware until its capability report and 
 - [ ] Switch modes, change ambient level and switch sources; no content-driven panel resize or button-width movement.
 - [ ] Drag ambient level, then change mode using hardware/phone; drag cancels and cannot reactivate Transparency.
 - [ ] Keyboard/VoiceOver controls report unavailable during operations and work again after confirmation/failure.
+
+
+## macOS output routing (0.6.0)
+
+- [ ] Set macOS output to built-in speakers or another device; click Use for audio for this Mac and confirm default output becomes the controlled headphones.
+- [ ] Confirm this Mac's reported source address matches its Bluetooth controller address (diagnostics reports target-is-this-Mac).
+- [ ] Switch to a phone/another Mac and confirm local output is unchanged.
+- [ ] A rejected switch (call/media-link failure) must not change macOS output.
+- [ ] Disconnect/change headphones during endpoint discovery; no subsequent output change may target the old headphones.
+- [ ] Missing endpoint/OS rejection shows partial-success feedback, without claiming successful routing.

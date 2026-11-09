@@ -82,3 +82,8 @@ The 2026-11-09 user capture confirms successful ANC/ambient/off reports, battery
 ## 0.5.0 stable operation layout
 
 Keep a fixed370x640 panel with scrolling central content and pinned header/footer. Reserve status and spinner space rather than inserting rows on routine operations. Discovery continues in the background without a loading row. Keep a capability-supported ambient slider visible but disabled outside Transparency. Retain last-confirmed mode only during same-profile intermediate reports, while command availability uses live state. Display pending slider draft as Applying until the operation ends. Rename the product to Earbar as an assistant-selected working name, retaining the Earbar bundle identifier.
+
+
+## 0.6.0 local source audio routing
+
+User expects Use for audio to select the headphones in macOS when this Mac is the target source. Keep headphone protocol switching in TandemCore; implement system routing in the macOS adapter. Identify this Mac by local Bluetooth controller address. Wait for headphone acceptance before changing the default media output; other sources and rejected switches leave local routing alone. Match alive, default-capable Bluetooth outputs by headset address, with a unique name fallback only for opaque UIDs. Validate cancellation/connection token before writing, bound endpoint discovery and readback confirmation, and report partial success when routing fails. Do not change the system alert output or per-app routing.

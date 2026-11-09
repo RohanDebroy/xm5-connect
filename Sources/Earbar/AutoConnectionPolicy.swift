@@ -32,7 +32,7 @@ enum AutoConnectionPolicy {
         return connected.count == 1 ? connected[0].id : nil
     }
 
-    private static func addressPrefix(_ value: String) -> String? {
+    static func addressPrefix(_ value: String) -> String? {
         let prefix = String(value.prefix(17)).replacingOccurrences(of: "-", with: ":").uppercased()
         let bytes = Array(prefix.utf8)
         guard bytes.count == 17 else { return nil }

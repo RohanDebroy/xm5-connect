@@ -19,7 +19,7 @@ Earbar is an independent project, unaffiliated with Sony or the reference projec
 1. Pair your headphones in macOS Bluetooth settings and connect them to this Mac.
 2. Build the app using the instructions below, then open `dist/Earbar.app` (generated bundles are excluded from Git). Its headphone icon appears in the menu bar; there is no Dock window.
 3. Allow Bluetooth access when macOS asks. The app automatically selects connected Sony headphones, preferring the current macOS audio output, then a connected saved selection, then a sole connected candidate. Battery loading starts at launch without opening the icon. If multiple devices remain ambiguous, choose one in the picker.
-4. For switching, both audio sources must already be connected to the headphones. Click **Use for audio** beside a connected source. The app waits for the headphones' result and then reads the source list again.
+4. For switching, both audio sources must already be connected to the headphones. Click **Use for audio** beside a connected source. The app waits for the headphones' result and then reads the source list again. When the selected source is this Mac, a successful switch also sets macOS's default audio output to the controlled headphones. Selecting a phone or another source leaves this Mac's output unchanged.
 
 An active call, missing media connection, or voice assistant can prevent switching. The selected-source label is the headphones' reported selection, not an independent measurement of audio playback. Disconnect closes the app's control channel without deliberately disconnecting macOS audio.
 
@@ -161,3 +161,10 @@ The product, executable and bundle are named Earbar. The bundle identifier is `l
 ### 0.5.1 layout refinements
 
 The ambient slider sits immediately below the Ambient mode row, before Normal. Scroll indicators are hidden; overflow remains scrollable on smaller screens. The footer contains only its buttons with8-point vertical padding. Operation messages use the existing header status line, with full text in its tooltip, without reserving a blank footer block.
+
+
+## macOS output routing (0.6.0)
+
+**Use for audio** coordinates the headphone source selection and this Mac's default media output. Local-source detection uses this Mac's Bluetooth controller address, rather than assuming that any device named MacBook is local. After headphone acceptance, CoreAudio selects an available Bluetooth output matching the controlled headphones' address. A unique matching Bluetooth output name is allowed only when its UID has no usable address; conflicting addresses and ambiguous names are rejected. The output is read back to confirm the change. Missing endpoints and failed output changes are reported separately from headphone acceptance.
+
+Automatic connection and background polling do not change macOS output. Routing happens only after a successful manual source switch to this Mac. Audio applications that explicitly select their own output may need their output changed inside that application. Native routing uses Apple's [default output property](https://developer.apple.com/documentation/coreaudio/kaudiohardwarepropertydefaultoutputdevice) and local Bluetooth identity uses [IOBluetoothHostController](https://developer.apple.com/documentation/iobluetooth/iobluetoothhostcontroller).

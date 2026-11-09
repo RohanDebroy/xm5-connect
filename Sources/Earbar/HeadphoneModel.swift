@@ -161,12 +161,23 @@ final class HeadphoneModel: ObservableObject {
     func switchSource(_ source: AudioSource) {
         guard phase == .connected, !busy, state.canSwitch, source.isConnected, let client else { return }
         busy = true; switchingAddress = source.address; message = nil
+        let headphones = HeadphoneCandidate(id: selectedID, name: selectedName, isConnected: true)
+        let localAddress = IOBluetoothHostController.default()?.addressAsString()
+        log("Source switch: local Bluetooth identity available=\(localAddress != nil), target is this Mac=\(localAddress.flatMap { AutoConnectionPolicy.addressPrefix($0) } == AutoConnectionPolicy.addressPrefix(source.address))")
         let token = connectionToken
         work = Task { [weak self] in
             do {
-                let result = try await client.switchSource(source.address)
+                let message = try await SourceSwitchCoordinator.perform(sourceAddress: source.address, localAddress: localAddress,
+                    request: { try await client.switchSource(source.address) },
+                    routeLocalOutput: { [weak self] in
+                        self?.log("Headphones accepted this Mac; selecting the macOS headphone output")
+                        try await SystemAudioOutput.select(headphones, isCurrent: { [weak self] in
+                            self?.connectionToken == token
+                        })
+                    })
                 guard let self, self.connectionToken == token else { return }
-                self.message = result.message
+                self.message = message
+                self.log(message)
                 self.updatedAt = Date()
             } catch {
                 guard let self, self.connectionToken == token else { return }
