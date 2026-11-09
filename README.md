@@ -2,12 +2,24 @@
 
 A native menu bar app for Sony audio devices using the Tandem v2 protocol over Classic Bluetooth RFCOMM. It displays headphone battery and charging status, connected audio sources, buttons to request source switching, and a checked Listening Mode section for Noise Cancellation, Transparency and Normal (Off). The original target is WH-1000XM5; feature selection uses advertised protocol functions, never device names.
 
+## Features
+
+- Menu bar battery percentage and charging status.
+- Automatic connection to connected headphones, with a manual device picker.
+- List of audio sources currently connected to the headphones and controls to request the active source.
+- Noise Cancellation, Transparency and Normal (Off), where supported.
+- Ambient Sound slider from 1–20 for the supported seven-byte NC/ASM profile.
+- Capability-based protocol abstractions: features are selected from device advertisements rather than model names.
+- Local Bluetooth control with no account, cloud service or runtime third-party dependencies.
+
+Earbar is an independent project, unaffiliated with Sony or the reference projects credited below. It is not the official Sony Sound Connect app.
+
 ## Run the packaged app
 
 1. Pair your headphones in macOS Bluetooth settings and connect them to this Mac.
-2. Open `dist/Earbar.app`. Its headphone icon appears in the menu bar; there is no Dock window.
+2. Build the app using the instructions below, then open `dist/Earbar.app` (generated bundles are excluded from Git). Its headphone icon appears in the menu bar; there is no Dock window.
 3. Allow Bluetooth access when macOS asks. The app automatically selects connected Sony headphones, preferring the current macOS audio output, then a connected saved selection, then a sole connected candidate. Battery loading starts at launch without opening the icon. If multiple devices remain ambiguous, choose one in the picker.
-4. For switching, both audio sources must already be connected to the headphones. Click **Switch** beside a connected source. The app waits for the headphones' result and then reads the source list again.
+4. For switching, both audio sources must already be connected to the headphones. Click **Use for audio** beside a connected source. The app waits for the headphones' result and then reads the source list again.
 
 An active call, missing media connection, or voice assistant can prevent switching. The selected-source label is the headphones' reported selection, not an independent measurement of audio playback. Disconnect closes the app's control channel without deliberately disconnecting macOS audio.
 
@@ -18,7 +30,7 @@ This is a local, ad-hoc-signed build, not a notarized download. Keep the bundle 
 Requires macOS 13+ and an installed Swift 6 toolchain/Xcode command-line tools. No third-party dependencies.
 
 ```bash
-cd outputs/xm5-connect
+# From the project directory (outputs/xm5-connect in the parent workspace):
 ./scripts/test.sh
 ./scripts/build-app.sh
 open "dist/Earbar.app"
@@ -86,7 +98,7 @@ Implemented table-1 function/type pairs:
 
 | Advertised function | NCASM type | Available controls |
 | --- | --- | --- |
-| `0x6B` | `0x17` | ANC, Transparency, Normal |
+| `0x6B` | `0x17` | ANC, Transparency, Normal; ambient level 1–20 |
 | `0x6D` | `0x19` | ANC, Transparency, Normal; preserve adaptation settings |
 | `0x67` | `0x22` | Transparency, Normal |
 | `0x66` | `0x21` | Transparency, Normal |
@@ -105,11 +117,35 @@ An optional capacity inquiry is no longer part of startup: missing/rejected capa
 
 App options → **Copy Diagnostics** copies a bounded, in-memory log of the last 300 entries, including frame hex and support descriptors. It contains device names and Bluetooth addresses; review before sharing. No network requests, analytics, or persistent device logs are used.
 
-## Protocol sources
+## References and acknowledgements
 
-Implementation follows the repository's `../../docs/sony-mdr/` documentation, especially transport, framing, handshake, features and multipoint pages. See `PROTOCOL-NOTES.md` for the initial findings. The app uses Apple's [MenuBarExtra](https://developer.apple.com/documentation/swiftui/menubarextra) and [IOBluetooth RFCOMM](https://developer.apple.com/documentation/iobluetooth/iobluetoothdevice/openrfcommchannelasync(_:withchannelid:delegate:)) APIs.
+This app builds on public Sony headphone protocol research. Thanks to the maintainers and contributors of these projects:
 
+| Reference | How it informed Earbar |
+| --- | --- |
+| [Gadgetbridge](https://codeberg.org/Freeyourgadget/Gadgetbridge) | Cross-check of Sony v2 listening-mode commands, Voice Focus fields and ambient-level semantics. |
+| [mos9527/SonyHeadphonesClient](https://github.com/mos9527/SonyHeadphonesClient) | Independent definitions of support descriptors, NC/ASM payloads, connected-device lists and source-switch commands. |
+| [ncr/omarchy-headphones protocol notes](https://github.com/ncr/omarchy-headphones/blob/main/PROTOCOL.md) | Additional WH-1000XM5 packet examples used to cross-check listening-mode commands and delayed state notifications. |
+| Apple [MenuBarExtra](https://developer.apple.com/documentation/swiftui/menubarextra) and [IOBluetooth](https://developer.apple.com/documentation/iobluetooth) documentation | Native menu bar UI and Classic Bluetooth RFCOMM integration. |
 
-### 0.4.0 ambient-level reference check
+### Gadgetbridge cross-check
 
-Compared the existing mode layout with [Gadgetbridge SonyProtocolImplV2](https://github.com/Freeyourgadget/Gadgetbridge/blob/master/app/src/main/java/nodomain/freeyourgadget/gadgetbridge/service/devices/sony/headphones/protocol/impl/v2/SonyProtocolImplV2.java) and [AmbientSoundControl](https://github.com/Freeyourgadget/Gadgetbridge/blob/master/app/src/main/java/nodomain/freeyourgadget/gadgetbridge/devices/sony/headphones/prefs/AmbientSoundControl.java), accessed 2026-11-09 through its GitHub mirror (Codeberg was inaccessible). Its seven-byte v2 command matches our total-effect, NC/ASM, Voice Focus and level fields. Gadgetbridge's UI preference offsets ambient levels by one, producing wire values 1–20. The native slider uses those wire values directly, without the Android preference offset. No Gadgetbridge implementation code is incorporated.
+Gadgetbridge's [SonyProtocolImplV2.java](https://github.com/Freeyourgadget/Gadgetbridge/blob/master/app/src/main/java/nodomain/freeyourgadget/gadgetbridge/service/devices/sony/headphones/protocol/impl/v2/SonyProtocolImplV2.java) and [AmbientSoundControl.java](https://github.com/Freeyourgadget/Gadgetbridge/blob/master/app/src/main/java/nodomain/freeyourgadget/gadgetbridge/devices/sony/headphones/prefs/AmbientSoundControl.java) were consulted through its GitHub mirror on 2026-11-09 because Codeberg was inaccessible during development. The checked seven-byte v2 layout agrees with the app's total-effect, NC/ASM, Voice Focus and ambient-level fields. Gadgetbridge offsets its Android slider preference by one to produce wire levels 1–20; Earbar uses those wire levels directly.
+
+### Other protocol definitions
+
+The SonyHeadphonesClient files used as references include:
+
+- [Constants.h](https://github.com/mos9527/SonyHeadphonesClient/blob/master/src/Constants.h): support descriptors and function identities.
+- [ProtocolV2T1.h](https://github.com/mos9527/SonyHeadphonesClient/blob/master/src/ProtocolV2T1.h): listening-mode and other table-1 structures.
+- [ProtocolV2T2.h](https://github.com/mos9527/SonyHeadphonesClient/blob/master/src/ProtocolV2T2.h): peripheral lists and source-switch structures.
+- [Headphones.cpp](https://github.com/mos9527/SonyHeadphonesClient/blob/master/src/Headphones.cpp): initial-state requests and feature dispatch.
+
+These projects were consulted as protocol references; their implementation code is not incorporated into this app. Each reference project retains its own license and authorship. Acknowledgement does not imply endorsement or universal device compatibility.
+
+## Project documentation
+
+- [Protocol research notes](PROTOCOL-NOTES.md)
+- [Design and architecture decisions](docs/design.md)
+- [Verification results](docs/verification.md)
+- [Hardware verification checklist](docs/hardware-checklist.md)
